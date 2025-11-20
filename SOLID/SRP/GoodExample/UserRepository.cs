@@ -22,8 +22,8 @@ namespace SOLID.SRP.GoodExample
 
     public class User
     {
-        public string Email { get; set; }
-        public string HashedPassword { get; set; }
-        public string Name { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string HashedPassword { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

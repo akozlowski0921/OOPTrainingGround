@@ -9,9 +9,9 @@ namespace SOLID.DIP.GoodExample
     public class MockMessageSender : IMessageSender
     {
         public int MessagesSentCount { get; private set; }
-        public string LastRecipient { get; private set; }
-        public string LastSubject { get; private set; }
-        public string LastBody { get; private set; }
+        public string LastRecipient { get; private set; } = string.Empty;
+        public string LastSubject { get; private set; } = string.Empty;
+        public string LastBody { get; private set; } = string.Empty;
 
         public void SendMessage(string to, string subject, string body)
         {
