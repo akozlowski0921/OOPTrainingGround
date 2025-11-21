@@ -58,14 +58,16 @@ const selectTodosWithUsers = createSelector(
 // Selector dla statystyk
 const selectTodoStats = createSelector(
   [selectAllTodos],
-  (todos) => ({
-    total: todos.length,
-    completed: todos.filter(t => t.completed).length,
-    incomplete: todos.filter(t => !t.completed).length,
-    completionRate: todos.length > 0 
-      ? (todos.filter(t => t.completed).length / todos.length) * 100 
-      : 0,
-  })
+  (todos) => {
+    const completed = todos.filter(t => t.completed).length;
+    const total = todos.length;
+    return {
+      total,
+      completed,
+      incomplete: total - completed,
+      completionRate: total > 0 ? (completed / total) * 100 : 0,
+    };
+  }
 );
 
 // Komponent - używa selektora, rerenderuje się tylko gdy zmieni się output selektora

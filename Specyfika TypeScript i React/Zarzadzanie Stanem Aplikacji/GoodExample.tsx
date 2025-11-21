@@ -105,8 +105,10 @@ export function UserProfile() {
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme(); // Tylko theme context
   
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  
   return (
-    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+    <button onClick={toggleTheme}>
       Toggle Theme (Current: {theme})
     </button>
   );
