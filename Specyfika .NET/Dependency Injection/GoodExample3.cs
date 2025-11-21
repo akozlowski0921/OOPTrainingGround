@@ -162,8 +162,8 @@ public class Startup
         services.AddSingleton<IConfigurationCache, ConfigurationCache>();
         
         // ✅ Singleton używa IServiceScopeFactory dla Scoped dependencies
+        // IServiceScopeFactory is automatically registered by framework
         services.AddSingleton<ReportGenerator>();
-        services.AddSingleton<IServiceScopeFactory, ServiceScopeFactory>();
         
         // ✅ DbContext zawsze Scoped
         services.AddDbContext<AppDbContext>(options =>

@@ -112,9 +112,19 @@ public class NotificationService
         eventBus.Subscribe<OrderCreatedEvent>(OnOrderCreated);
     }
     
+    // ✅ async void is acceptable for event handlers
+    // In production, wrap in try/catch to handle exceptions
     private async void OnOrderCreated(OrderCreatedEvent evt)
     {
-        await _emailService.SendConfirmationAsync(evt.CustomerEmail, evt.OrderId);
+        try
+        {
+            await _emailService.SendConfirmationAsync(evt.CustomerEmail, evt.OrderId);
+        }
+        catch (Exception ex)
+        {
+            // Log error - don't let exception crash the app
+            Console.WriteLine($"Error sending email: {ex.Message}");
+        }
     }
 }
 
