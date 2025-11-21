@@ -1,0 +1,7 @@
+namespace SOLID.ISP.Good3
+{
+    public interface IScannable
+    {
+        void Scan();
+    }
+}
