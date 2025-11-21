@@ -129,6 +129,74 @@ Ta sekcja zawiera praktyczne przykłady typowych problemów i ich rozwiązań sp
 
 ---
 
+### 11. Custom Renderers i React Reconciliation
+**Problem:** Próba renderowania React do non-DOM targets bez właściwego renderer'a, bezpośrednia manipulacja Fiber internals.
+
+**Rozwiązanie:** react-reconciler dla custom renderers, pozwolenie React zarządzać reconciliation, proper keys dla list.
+
+**Najważniejsze:**
+* react-reconciler dla custom rendering targets (CLI, mobile, 3D)
+* Nie manipuluj React Fiber internals bezpośrednio
+* Unique, stable keys dla wszystkich list
+* Profiler API dla performance insights
+
+---
+
+### 12. Zaawansowane Optymalizacje Komponentów
+**Problem:** Renderowanie tysięcy elementów bez virtualization, brak memoization, niepotrzebne re-renders.
+
+**Rozwiązanie:** react-window dla virtualization, React.memo z custom comparators, React DevTools Profiler.
+
+**Najważniejsze:**
+* react-window/react-virtualized dla długich list (>100 elementów)
+* React.memo + useCallback/useMemo dla optymalizacji re-renders
+* Profiler API do identyfikacji bottlenecków
+* useMemo tylko dla kosztownych obliczeń
+
+---
+
+### 13. Dynamiczne Formy z Logicznym Flow
+**Problem:** Ręczne tworzenie każdego pola, duplikacja validation logic, trudność w rozbudowie.
+
+**Rozwiązanie:** React Hook Form + Zod dla schema-driven forms, automatyczna generacja z JSON, multi-step wizards.
+
+**Najważniejsze:**
+* JSON schema dla automatycznej generacji pól
+* Zod dla type-safe validation
+* React Hook Form dla wydajności (minimalne re-renders)
+* Discriminated unions dla conditional validation
+* Wizard pattern dla multi-step forms
+
+---
+
+### 14. Integracja z GraphQL
+**Problem:** Ręczne fetch bez cache, brak type safety, ręczne zarządzanie refetch i updates.
+
+**Rozwiązanie:** Apollo Client z cache management, fragments dla reusability, optimistic UI.
+
+**Najważniejsze:**
+* Apollo Client dla automatycznego cache management
+* useQuery/useMutation hooks
+* Fragments dla skalowania i reusability
+* Cache policies (cache-first, network-only)
+* Optimistic UI dla lepszego UX
+
+---
+
+### 15. Error Boundaries i Monitoring
+**Problem:** Błędy crashują całą aplikację, brak graceful degradation, brak error tracking.
+
+**Rozwiązanie:** Error Boundary components, integracja z Sentry/LogRocket, Suspense z retry.
+
+**Najważniejsze:**
+* Error Boundary class dla łapania błędów w drzewie komponentów
+* Fallback UI dla graceful degradation
+* Integracja z monitoring services (Sentry, LogRocket)
+* Suspense z ErrorBoundary dla async components
+* Retry mechanism dla transient errors
+
+---
+
 ## 🎓 Jak korzystać z tej sekcji?
 
 1. **Zacznij od BadExample** - Zobacz typowy problem i spróbuj zrozumieć dlaczego jest problematyczny.
