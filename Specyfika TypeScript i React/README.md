@@ -197,6 +197,37 @@ Ta sekcja zawiera praktyczne przykłady typowych problemów i ich rozwiązań sp
 
 ---
 
+### 16. Komunikacja z API
+**Problem:** Brak obsługi błędów, loading states, race conditions, brak automatycznego odświeżania danych po mutacji.
+
+**Rozwiązanie:** Discriminated unions dla stanu, AbortController dla cleanup, custom hooks dla reusability, optimistic updates.
+
+**Najważniejsze:**
+* Discriminated unions dla type-safe async state (idle | loading | success | error)
+* AbortController dla anulowania requestów i zapobiegania race conditions
+* Proper error handling i HTTP status code checks
+* Optimistic updates dla lepszego UX
+* Custom hooks dla reusable API logic
+* React Query/SWR dla zaawansowanych przypadków
+
+---
+
+### 17. Zarządzanie Stanem Aplikacji
+**Problem:** Nadużycie Context API (wszystko w jednym kontekście), brak middleware, słaba wydajność, async logic w komponentach.
+
+**Rozwiązanie:** Context API dla prostych przypadków vs Redux dla złożonych aplikacji, redux-thunk/saga dla async, reselect dla optymalizacji.
+
+**Najważniejsze:**
+* Context API dla małych/średnich aplikacji (theme, auth, language)
+* Redux Toolkit dla dużych aplikacji z złożonym stanem
+* Segregowane konteksty według domeny
+* redux-thunk dla prostego async, redux-saga dla złożonych flows
+* Normalized state dla relational data
+* Reselect dla memoized selectors i performance
+* Type-safe hooks (useAppDispatch, useAppSelector)
+
+---
+
 ## 🎓 Jak korzystać z tej sekcji?
 
 1. **Zacznij od BadExample** - Zobacz typowy problem i spróbuj zrozumieć dlaczego jest problematyczny.
