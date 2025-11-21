@@ -85,12 +85,23 @@ Każdy przykład demonstruje:
 **Behavioral Patterns** (interakcje między obiektami):
 - Strategy, Observer, Command, Mediator
 
+### 11. CQRS (Command Query Responsibility Segregation)
+**Problem:** Jeden model dla zapisu i odczytu, brak optymalizacji.  
+**Rozwiązanie:** Rozdzielenie modelu zapisu (Commands) od modelu odczytu (Queries).  
+**Kluczowe korzyści:** Independent scaling, performance optimization, different models for different purposes, caching strategies.
+
+### 12. Event Sourcing
+**Problem:** Brak historii zmian, niemożność odtworzenia stanu w przeszłości.  
+**Rozwiązanie:** Zapisywanie wszystkich zmian jako sekwencji eventów zamiast current state.  
+**Kluczowe korzyści:** Complete audit trail, temporal queries, event replay, compliance, debugging.
+
 ## 🔗 Enterprise Patterns
 
-- Repository Pattern (dostęp do danych)
-- Unit of Work (transakcje)
-- CQRS (Command Query Responsibility Segregation)
-- Mediator (MediatR library w ASP.NET Core)
+- **Repository Pattern** (dostęp do danych)
+- **Unit of Work** (transakcje)
+- **CQRS** (Command Query Responsibility Segregation) - Rozdzielenie read/write
+- **Event Sourcing** - Historia zmian przez eventy
+- **Mediator** (MediatR library w ASP.NET Core) - Centralizacja komunikacji
 
 ## ⚠️ Uwaga
 
