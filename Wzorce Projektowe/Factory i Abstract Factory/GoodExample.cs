@@ -119,7 +119,7 @@ namespace DesignPatterns.Factory
     // Concrete factories
     public class DevelopmentServiceFactory : IServiceFactory
     {
-        public INotification CreateNotification() => new ConsoleLogger() as INotification;
+        public INotification CreateNotification() => new SmsNotification();
         public ILogger CreateLogger() => new ConsoleLogger();
     }
 

@@ -141,9 +141,25 @@ namespace SpecyfikaDotNet.TypesComparison
     }
 
     // ✅ In parameter dla readonly pass-by-reference (duże struktury)
+    public readonly struct LargeValueStruct
+    {
+        public int Field1 { get; }
+        public int Field2 { get; }
+        public long Field3 { get; }
+        public long Field4 { get; }
+
+        public LargeValueStruct(int f1, int f2, long f3, long f4)
+        {
+            Field1 = f1;
+            Field2 = f2;
+            Field3 = f3;
+            Field4 = f4;
+        }
+    }
+
     public class GoodStructPassage
     {
-        public void ProcessLargeStruct(in GoodLargeData data)
+        public void ProcessLargeStruct(in LargeValueStruct data)
         {
             // 'in' - readonly reference, brak kopiowania
             Console.WriteLine(data.Field1);
