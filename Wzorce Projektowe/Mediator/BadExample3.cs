@@ -1,42 +1,108 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DesignPatterns.Mediator.Bad3
 {
-    // ❌ BAD: Spaghetti dependencies
+    // ❌ BAD: No mediator for CQRS/Event Sourcing - direct coupling
 
-    public class Form
+    public class OrderAggregate
     {
-        private Button1 _btn1;
-        private Button2 _btn2;
-        private TextBox _textBox;
+        public int OrderId { get; set; }
+        public string Status { get; set; }
+        public List<string> Events { get; set; } = new();
 
-        public void Initialize()
+        // ❌ Direct dependencies on multiple components
+        private readonly EventStore _eventStore;
+        private readonly OrderReadRepository _readRepository;
+        private readonly NotificationService _notificationService;
+        private readonly AnalyticsService _analyticsService;
+
+        public OrderAggregate(
+            EventStore eventStore,
+            OrderReadRepository readRepo,
+            NotificationService notificationService,
+            AnalyticsService analyticsService)
         {
-            _btn1 = new Button1(_btn2, _textBox);
-            _btn2 = new Button2(_btn1, _textBox);
-            _textBox = new TextBox(_btn1, _btn2);
-            // ❌ Circular dependencies
+            _eventStore = eventStore;
+            _readRepository = readRepo;
+            _notificationService = notificationService;
+            _analyticsService = analyticsService;
+            // ❌ Aggregate zna wszystkie systemy
+        }
+
+        public void PlaceOrder()
+        {
+            Status = "Placed";
+            Events.Add("OrderPlaced");
+
+            // ❌ Aggregate odpowiada za zapis eventów
+            _eventStore.Save(Events);
+
+            // ❌ Aggregate aktualizuje read model
+            _readRepository.UpdateOrderStatus(OrderId, "Placed");
+
+            // ❌ Aggregate wysyła notyfikacje
+            _notificationService.SendOrderConfirmation(OrderId);
+
+            // ❌ Aggregate aktualizuje analytics
+            _analyticsService.RecordOrderPlaced(OrderId);
+
+            // ❌ PROBLEMY:
+            // - Aggregate ma zbyt wiele odpowiedzialności
+            // - Tight coupling z infrastrukturą
+            // - Trudne testowanie
+            // - Naruszenie SRP
         }
     }
 
-    public class Button1
+    public class EventStore
     {
-        private Button2 _btn2;
-        private TextBox _tb;
-        public Button1(Button2 b, TextBox t) { _btn2 = b; _tb = t; }
+        private readonly List<string> _events = new();
+
+        public void Save(List<string> events)
+        {
+            _events.AddRange(events);
+            // ❌ EventStore bezpośrednio aktualizuje projections
+            UpdateAllProjections(events);
+        }
+
+        private void UpdateAllProjections(List<string> events)
+        {
+            // ❌ Hard-coded projection updates
+            Console.WriteLine("Updating projections...");
+        }
     }
 
-    public class Button2
+    public class OrderReadRepository
     {
-        private Button1 _btn1;
-        private TextBox _tb;
-        public Button2(Button1 b, TextBox t) { _btn1 = b; _tb = t; }
+        public void UpdateOrderStatus(int orderId, string status)
+        {
+            Console.WriteLine($"Updated order {orderId} to {status}");
+        }
     }
 
-    public class TextBox
+    public class NotificationService
     {
-        private Button1 _btn1;
-        private Button2 _btn2;
-        public TextBox(Button1 b1, Button2 b2) { _btn1 = b1; _btn2 = b2; }
+        public void SendOrderConfirmation(int orderId)
+        {
+            Console.WriteLine($"Sent confirmation for order {orderId}");
+        }
     }
+
+    public class AnalyticsService
+    {
+        public void RecordOrderPlaced(int orderId)
+        {
+            Console.WriteLine($"Recorded analytics for order {orderId}");
+        }
+    }
+
+    // ❌ PROBLEMY:
+    // - Brak centralizacji przepływu wiadomości
+    // - Tight coupling między write side i read side
+    // - Aggregate wie o read models
+    // - Brak separation of concerns
+    // - Trudne dodawanie nowych projections
+    // - Trudne skalowanie
 }
