@@ -29,6 +29,31 @@ Ten folder zawiera praktyczne przykłady specyficznych dla .NET zagadnień, któ
 **Rozwiązanie**: Użycie record dla immutability, value-based equality, with expressions.  
 **Kluczowe korzyści**: Gwarancja niemutowalności, automatyczna implementacja Equals/GetHashCode, thread-safety.
 
+### 6. Async/Await i TPL (Task Parallel Library)
+**Problem**: Deadlocki, brak ConfigureAwait, async void, sekwencyjne wykonywanie równoległych operacji.  
+**Rozwiązanie**: Async all the way, ConfigureAwait(false) w library code, Task.WhenAll dla równoległości.  
+**Kluczowe korzyści**: Brak deadlocków, lepsza wydajność, prawidłowa obsługa asynchroniczności.
+
+### 7. Serializacja JSON
+**Problem**: Mieszanie System.Text.Json i Newtonsoft.Json, brak walidacji, wrażliwe dane w JSON.  
+**Rozwiązanie**: Spójne użycie System.Text.Json, custom converters, JsonIgnore dla wrażliwych danych.  
+**Kluczowe korzyści**: Lepsza wydajność, type safety, bezpieczeństwo danych.
+
+### 8. Typy Referencyjne vs Wartościowe
+**Problem**: Boxing/unboxing, mutable struct, duże struktury kopiowane przy wywołaniach.  
+**Rozwiązanie**: Readonly struct, Span<T> dla zero-allocation slicing, generics zamiast object.  
+**Kluczowe korzyści**: Brak boxing, zero allocations, lepsza wydajność.
+
+### 9. CancellationToken
+**Problem**: Ignorowanie tokena, brak propagacji, nieprawidłowa obsługa OperationCanceledException.  
+**Rozwiązanie**: Propagacja przez cały call stack, linked tokens, cooperative cancellation.  
+**Kluczowe korzyści**: Graceful cancellation, możliwość przerwania długich operacji, kontrola nad wykonaniem.
+
+### 10. Options Pattern
+**Problem**: Bezpośredni dostęp do IConfiguration, magic strings, brak walidacji.  
+**Rozwiązanie**: Strongly-typed options classes, IOptions/IOptionsSnapshot/IOptionsMonitor, walidacja.  
+**Kluczowe korzyści**: Type safety, łatwe testowanie, hot-reload configuration.
+
 ## 🎯 Cel
 
 Każdy przykład demonstruje:
