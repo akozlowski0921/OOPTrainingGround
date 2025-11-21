@@ -30,7 +30,7 @@ class OldLoggerAdapter implements Logger {
   }
 
   error(message: string, error?: Error): void {
-    this.oldLogger.writeError(message, error!);
+    this.oldLogger.writeError(message, error || new Error(message));
   }
 }
 
