@@ -243,18 +243,18 @@ export function NoMemoryLeak() {
 }
 
 // Profiled różne scenariusze
+const dataSize = {
+  small: 10,
+  medium: 100,
+  large: 1000
+};
+
 export function ProfiledScenarios() {
   const [scenario, setScenario] = useState<'small' | 'medium' | 'large'>('small');
 
-  const dataSize = {
-    small: 10,
-    medium: 100,
-    large: 1000
-  };
-
   const data = useMemo(
     () => Array.from({ length: dataSize[scenario] }, (_, i) => i),
-    [scenario, dataSize]
+    [scenario]
   );
 
   return (
@@ -276,7 +276,7 @@ export function ProfiledScenarios() {
 
 const OptimizedExpensiveItem = memo(({ value }: { value: number }) => {
   const result = useMemo(() => {
-    return Array.from({ length: 100 }, () => Math.random()).reduce((a, b) => a + b);
+    return Array.from({ length: 100 }, (_, i) => i).reduce((a, b) => a + b);
   }, []);
   
   return <div>{value}: {result}</div>;
