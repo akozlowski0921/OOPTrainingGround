@@ -106,7 +106,7 @@ class VanillaDecorator extends CoffeeDecorator {
 - **Kompozycję funkcjonalności** – budowanie złożonych obiektów z prostych części
 - **Runtime flexibility** – dodawanie/usuwanie funkcjonalności dynamicznie
 - **Reużywalność** – każdy dekorator może być użyty z dowolnym komponentem
-- **Przejrzystość** – dekoratory są interchan geable, nie zmieniają interfejsu
+- **Przejrzystość** – dekoratory są interchangeable, nie zmieniają interfejsu
 
 ### W czym pomaga stosowanie Decorator?
 
