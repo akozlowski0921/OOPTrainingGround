@@ -34,7 +34,7 @@ function UserList() {
 
   if (state.status === 'loading') return <div>Loading users...</div>;
   if (state.status === 'error') return <div>Error: {state.error}</div>;
-  if (state.status === 'idle' || state.status === 'success' && !state.data) {
+  if (state.status === 'idle' || (state.status === 'success' && !state.data)) {
     return <div>No data</div>;
   }
 
