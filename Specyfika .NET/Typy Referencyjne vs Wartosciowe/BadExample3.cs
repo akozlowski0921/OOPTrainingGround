@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace SpecyfikaDotNet.TypesComparison.Bad3
 {
