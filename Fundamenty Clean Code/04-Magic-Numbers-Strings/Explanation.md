@@ -66,3 +66,274 @@
 * Nazywaj stałe według ich znaczenia biznesowego, nie wartości (`VipDiscountRate` nie `TwoZeroPercent`)
 * Grupuj powiązane stałe w klasach statycznych (np. `TaxRates`, `PaymentPolicies`)
 * Dodawaj komentarze z wyjaśnieniem przy stałych (np. `// 23% VAT`)
+
+---
+
+## 🎯 FAQ / INSIGHT
+
+### Po co eliminować Magic Numbers i Magic Strings?
+
+**Problem z magic values:**
+- **Brak kontekstu** – co oznacza `42`, `"pending"`, `0.23`?
+- **Duplikacja** – ta sama wartość powtórzona w wielu miejscach
+- **Błędy** – łatwo o literówkę: `"Admin"` vs `"admin"`
+- **Trudne zmiany** – zmiana wartości wymaga znalezienia wszystkich wystąpień
+- **Brak type safety** – można przypisać dowolną wartość
+
+**Korzyści z nazwanych stałych:**
+- **Self-documenting code** – nazwa wyjaśnia znaczenie
+- **Single source of truth** – wartość w jednym miejscu
+- **Type safety** – enums zapobiegają błędnym wartościom
+- **Autocomplete** – IDE podpowiada dostępne opcje
+- **Łatwe zmiany** – zmiana w jednym miejscu propaguje się wszędzie
+
+### W czym pomaga używanie nazwanych stałych?
+
+✅ **Czytelność** – `if (status == OrderStatus.Cancelled)` vs `if (status == 4)`  
+✅ **Maintainability** – zmiana VAT z 23% na 25% w jednym miejscu  
+✅ **Refactoring** – rename stałej zmienia wszystkie użycia  
+✅ **Documentation** – kod sam się dokumentuje  
+✅ **Error prevention** – kompilator wykrywa błędne wartości  
+✅ **Communication** – nazwy odpowiadają terminologii biznesowej  
+
+### ⚖️ Zalety i wady
+
+#### Zalety
+✅ **Czytelność** – jasna intencja kodu  
+✅ **Centralizacja** – wszystkie wartości w jednym miejscu  
+✅ **Type safety** – kompilator pomaga wykrywać błędy  
+✅ **Autocomplete** – IDE podpowiada opcje  
+✅ **Konsystencja** – te same wartości wszędzie  
+✅ **Łatwe zmiany** – modyfikacja w jednym miejscu  
+
+#### "Wady" (rzadkie)
+❌ **Więcej kodu** – definicje stałych/enumów (ale to inwestycja!)  
+❌ **Overkill** – dla wartości używanej raz (np. `const TWO = 2`)  
+
+### ⚠️ Na co uważać?
+
+#### 1. **Nie każda liczba to magic number**
+```csharp
+// ❌ Overkill:
+const int ZERO = 0;
+const int ONE = 1;
+const int TWO = 2;
+
+if (count > ZERO) { }  // Przesada!
+
+// ✅ GOOD: Tylko wartości biznesowe
+const int MAX_LOGIN_ATTEMPTS = 3;
+const decimal VIP_DISCOUNT_RATE = 0.15m;
+
+if (loginAttempts > MAX_LOGIN_ATTEMPTS) { }  // Sens biznesowy!
+```
+
+#### 2. **Nazywaj według znaczenia, nie wartości**
+```csharp
+// ❌ BAD: Nazwa opisuje wartość
+const decimal TWENTY_THREE_PERCENT = 0.23m;
+const int THIRTY_DAYS = 30;
+
+// ✅ GOOD: Nazwa opisuje znaczenie
+const decimal STANDARD_VAT_RATE = 0.23m;  // Może się zmienić!
+const int TRIAL_PERIOD_DAYS = 30;
+```
+
+#### 3. **Uważaj na string comparisons**
+```csharp
+// ❌ BAD: Case sensitive strings
+if (userType == "admin") { }  // "Admin" nie zadziała!
+
+// ✅ GOOD: Enum lub case-insensitive
+public enum UserType { Admin, User, Guest }
+
+if (userType == UserType.Admin) { }  // Type-safe!
+
+// Lub:
+if (userType.Equals("admin", StringComparison.OrdinalIgnoreCase)) { }
+```
+
+#### 4. **Nie duplikuj wartości w różnych miejscach**
+```csharp
+// ❌ BAD: Duplikacja
+public class OrderService
+{
+    const decimal VIP_DISCOUNT = 0.15m;
+}
+
+public class PricingService
+{
+    const decimal VIP_DISCOUNT = 0.15m;  // Duplikacja!
+}
+
+// ✅ GOOD: Centralizacja
+public static class BusinessConstants
+{
+    public const decimal VIP_DISCOUNT_RATE = 0.15m;
+}
+
+// Wszędzie używamy BusinessConstants.VIP_DISCOUNT_RATE
+```
+
+#### 5. **Dokumentuj jednostki i kontekst**
+```csharp
+// ❌ BAD: Niejasne jednostki
+const int MAX_SIZE = 500;  // KB? MB? Pixele?
+
+// ✅ GOOD: Jasne jednostki
+const int MAX_FILE_SIZE_KB = 500;
+const int MAX_IMAGE_WIDTH_PX = 1920;
+const int SESSION_TIMEOUT_MINUTES = 30;
+
+// Lub używaj TypedConstants:
+public static class Limits
+{
+    /// <summary>
+    /// Maximum file upload size in kilobytes
+    /// </summary>
+    public const int MaxFileSizeKB = 500;
+}
+```
+
+### 🚨 Najczęstsze pomyłki
+
+#### 1. **Magic numbers w testach**
+```csharp
+// ❌ BAD: Magic numbers w testach
+[Test]
+public void Should_Apply_Discount()
+{
+    var price = service.CalculatePrice(100, true);
+    Assert.AreEqual(85, price);  // Co to 85? Skąd się wzięło?
+}
+
+// ✅ GOOD: Nazwane wartości
+[Test]
+public void Should_Apply_VIP_Discount()
+{
+    const decimal BasePrice = 100m;
+    const decimal ExpectedDiscount = 0.15m;
+    const decimal ExpectedPrice = BasePrice * (1 - ExpectedDiscount);  // 85
+    
+    var price = service.CalculatePrice(BasePrice, isVip: true);
+    
+    Assert.AreEqual(ExpectedPrice, price);
+}
+```
+
+#### 2. **String literals w wielu miejscach**
+```typescript
+// ❌ BAD: String literals wszędzie
+if (status === "pending") { }
+emailService.send("pending");
+logger.log("Order status: pending");
+
+// ✅ GOOD: Enum lub const
+enum OrderStatus {
+    Pending = "pending",
+    Confirmed = "confirmed",
+    Shipped = "shipped"
+}
+
+if (status === OrderStatus.Pending) { }
+emailService.send(OrderStatus.Pending);
+logger.log(`Order status: ${OrderStatus.Pending}`);
+```
+
+#### 3. **Obliczenia z magic numbers**
+```csharp
+// ❌ BAD: Niejasne obliczenia
+var total = price * 1.23 + (weight * 0.5) * 1.15;
+// Co to 1.23? 0.5? 1.15?
+
+// ✅ GOOD: Nazwane stałe
+const decimal VAT_RATE = 1.23m;  // 23% VAT
+const decimal SHIPPING_RATE_PER_KG = 0.5m;
+const decimal HANDLING_FEE_MULTIPLIER = 1.15m;  // 15% handling
+
+var priceWithVat = price * VAT_RATE;
+var shippingCost = weight * SHIPPING_RATE_PER_KG;
+var totalShipping = shippingCost * HANDLING_FEE_MULTIPLIER;
+var total = priceWithVat + totalShipping;
+```
+
+#### 4. **Hardcoded URLs, paths, keys**
+```csharp
+// ❌ BAD: Hardcoded values
+var response = await httpClient.GetAsync("https://api.example.com/users");
+File.WriteAllText("C:\\logs\\app.log", message);
+
+// ✅ GOOD: Configuration
+public class ApiSettings
+{
+    public string BaseUrl { get; set; }
+    public string UsersEndpoint { get; set; }
+}
+
+// appsettings.json
+{
+    "Api": {
+        "BaseUrl": "https://api.example.com",
+        "UsersEndpoint": "/users"
+    }
+}
+
+// Usage
+var url = $"{_settings.Api.BaseUrl}{_settings.Api.UsersEndpoint}";
+var response = await httpClient.GetAsync(url);
+```
+
+#### 5. **Bool flags zamiast enum**
+```csharp
+// ❌ BAD: Bool dla wielu opcji
+public void ProcessOrder(bool isPriority, bool isInternational, bool requiresSignature)
+{
+    // Trudno zrozumieć: ProcessOrder(true, false, true)
+}
+
+// ✅ GOOD: Enum lub Flag enum
+[Flags]
+public enum ShippingOptions
+{
+    None = 0,
+    Priority = 1,
+    International = 2,
+    RequiresSignature = 4
+}
+
+public void ProcessOrder(ShippingOptions options)
+{
+    // Czytelne: ProcessOrder(ShippingOptions.Priority | ShippingOptions.RequiresSignature)
+}
+```
+
+### 💼 Kontekst biznesowy
+
+**Scenariusz: Zmiana stawki VAT z 23% na 25%**
+
+**Bez nazwanych stałych:**
+- Szukaj we wszystkich plikach `0.23`, `23`, `1.23`
+- Sprawdź każde wystąpienie czy to VAT czy inna wartość
+- 50+ miejsc do zmiany
+- Ryzyko pomyłki: 2 dni pracy + testy
+
+**Z nazwanymi stałymi:**
+```csharp
+public static class TaxRates
+{
+    public const decimal STANDARD_VAT_RATE = 0.23m;
+}
+
+// Zmiana:
+public const decimal STANDARD_VAT_RATE = 0.25m;
+
+// 1 linia, propagacja automatyczna, 10 minut pracy!
+```
+
+### 📝 Podsumowanie
+
+- **Magic numbers/strings** – wartości bez kontekstu, trudne do zrozumienia i utrzymania
+- **Używaj** nazwanych stałych, enumów, configuration dla wartości biznesowych
+- **Uważaj** na overkill (nie każda liczba to magic number), duplikację, brak jednostek
+- **Najczęstsze błędy:** literals w testach, brak centralizacji, niejasne jednostki, bool flags
+- **Korzyść biznesowa:** szybsze zmiany parametrów biznesowych, mniej błędów
