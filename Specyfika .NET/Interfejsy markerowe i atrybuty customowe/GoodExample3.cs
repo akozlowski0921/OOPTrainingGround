@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -63,26 +64,22 @@ namespace SpecyfikaDotNet.Attributes
     [Description("User entity representing application users")]
     public class GoodUser
     {
-        [Column("user_id", "int")]
+        [Column("user_id", "int", IsPrimaryKey = true, IsNullable = false)]
         [Description("User's unique identifier")]
-        [PrimaryKey: true, IsNullable: false]
         public int Id { get; set; }
 
-        [Column("email", "varchar(255)")]
+        [Column("email", "varchar(255)", IsNullable = false)]
         [Description("User's email address")]
         [Index("idx_user_email", IsUnique = true)]
-        [IsNullable: false]
         public string Email { get; set; }
 
-        [Column("username", "varchar(100)")]
+        [Column("username", "varchar(100)", IsNullable = false)]
         [Description("User's display name")]
         [Index("idx_user_username")]
-        [IsNullable: false]
         public string Username { get; set; }
 
-        [Column("age", "int")]
+        [Column("age", "int", IsNullable = true)]
         [Description("User's age")]
-        [IsNullable: true]
         public int? Age { get; set; }
     }
 

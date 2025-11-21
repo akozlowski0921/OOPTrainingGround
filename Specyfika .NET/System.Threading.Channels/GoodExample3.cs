@@ -11,7 +11,7 @@ namespace SpecyfikaDotNet.Channels
     // ✅ GOOD: Porównanie wydajności różnych mechanizmów kolejkowania
     public class QueuePerformanceComparison
     {
-        private const int ItemCount = 10000;
+        public const int ItemCount = 10000;
         private const int ProcessDelayMs = 1;
 
         // Test 1: Channel (UnboundedChannel)
